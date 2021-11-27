@@ -1,40 +1,52 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-int main (void)
+int main(void)
 {
     char menu_option;
-    int difficulty;
+    char filepath[50];
 
     printf("------------------------------------------\n\n");
 
-    do{
-    printf("Main Menu\n");
-    printf("a. Learn about how to use program.\n");
-    printf("b. Enter your initials (3 individual letters).\n");
-    printf("c. Difficulty Selection.\n");
-    printf("d. Start a new sequence of problems.\n");
-    printf("e. Save and quit.\n");
-    printf(" Please enter an option from the main menu: ");
-    scanf("%c",&menu_option);
+    do
+    {
+        printf("Main Menu\n");
+        printf("1. Create a new folder\n");
+        printf("2. Create a new file\n");
+        printf("3. initialise git repo\n");
+        printf("0. Quit.\n");
+        printf(" Please enter an option from the main menu: ");
 
-    switch(menu_option){
+        // loop menu
+        // each time an action is complete the main menu will show again
+        // have the option to do the function to the current working directory
+        // or you can enter a file path
 
-    case 'a':
-        break;
-    case 'b':
-        break;
-    case'c':
-        printf("case c");
-        break;
-    case'd':
-        break;
-    case'e':
-        break;
-    default:
-        printf("invalid input");
+        scanf("%c", &menu_option);
+
+        switch (menu_option)
+        {
+
+        case 'a':
+                    int status = system("./newfolder.zsh");
+        case 'b':
             break;
-    }
+        case 'c':
+            printf("case c");
+            break;
+        case 'd':
+            break;
+        case '0':
+            _Exit(0);
+        default:
+            printf("invalid input");
+            break;
+        }
 
-    }while(menu_option !='e');
+    } while (menu_option != '0');
 
-    }
+}
+
+// void newfolder(void){
+// int status = system("newfolder.zsh");
+// };
