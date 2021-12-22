@@ -1,3 +1,4 @@
+pwd
 echo "Target file path of new folder/file: "
 read filepath
 cd filepath
