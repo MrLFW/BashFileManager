@@ -4,3 +4,9 @@
     2. Requires using branching (_if_) to exit program if necessary
 3.  Initialise git repository
     1. Should set up CSGitLab project etc.
+4.  Feature management
+    1. _**Must**_ implement a method of having a shorthand code for feature e.g. F1, F2.1..., stored in a file.
+    2. _**Must**_ implement lookup to facilitate getting path from shorthand code
+
+
+6. Include mechanism for moving feature to new location in tree (folder hierarchy)

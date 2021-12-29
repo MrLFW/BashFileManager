@@ -22,15 +22,11 @@ Coursework submission will include creating project documentation (using doxygen
 
 ### Must (up to 10% for each top level feature)
 
-4.  Feature management
-    1. _**Must**_ implement a method of having a shorthand code for feature e.g. F1, F2.1..., stored in a file.
-    2. _**Must**_ implement lookup to facilitate getting path from shorthand code
     3. _**Should**_ include setting up git branch as appropriate
 
 ### Should (up to 10% for each top level feature)
 
 5. Include mechanism for renaming features (subtrees)
-6. Include mechanism for moving feature to new location in tree (folder hierarchy)
 7. Output tree diagram - PBS or WBS (svg, using plantuml)
     1. Requires tree walk (iterative or recursive)
     2. _**Must**_ exclude folders that start with a '.'
