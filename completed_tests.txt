@@ -8,5 +8,5 @@
     1. _**Must**_ implement a method of having a shorthand code for feature e.g. F1, F2.1..., stored in a file.
     2. _**Must**_ implement lookup to facilitate getting path from shorthand code
 
-
+5. Include mechanism for renaming features (subtrees)
 6. Include mechanism for moving feature to new location in tree (folder hierarchy)

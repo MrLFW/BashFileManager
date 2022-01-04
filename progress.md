@@ -21,12 +21,11 @@ Coursework submission will include creating project documentation (using doxygen
 ## Core functionality:
 
 ### Must (up to 10% for each top level feature)
-
+4.  Feature management
     3. _**Should**_ include setting up git branch as appropriate
 
 ### Should (up to 10% for each top level feature)
 
-5. Include mechanism for renaming features (subtrees)
 7. Output tree diagram - PBS or WBS (svg, using plantuml)
     1. Requires tree walk (iterative or recursive)
     2. _**Must**_ exclude folders that start with a '.'

@@ -21,8 +21,8 @@ move_feature() {
     if [ $tag_bool == "y" ]; then
         read -p "What tag would you like to move: " target_tag
         read -p "Where would you like to move it: " destination_tag
-        #get filepath ${line%%;*}
-        #get tag ${line##*;}
+        #to get filepath use ${line%%;*}
+        #to get tag use ${line##*;}
         while IFS= read -r line; do
             if [[ ${line##*;} == $target_tag ]]; then
                 target_feature=${line%%;*} #finds the filepath of the target tag
@@ -36,12 +36,12 @@ move_feature() {
         read -p "Where would you like to move it?: " destination_feature
     fi
     mv $target_feature $destination_feature
-    if [ $? -eq 0 ]; then
+    if [ $? -eq 0 ]; then #checks if move was completed successfully
         echo "Moved $target_feature to $destination_feature"
-        if [ $tag_bool == "y" ]; then #if successfully moved, this updates the directory of the tag in tags.txt
+        if [ $tag_bool == "y" ]; then
             sed -i '' "/$target_tag/d" $startingd/tags.txt
             new_dir="$destination_feature/${target_feature##*/}"
-            echo "$new_dir;$target_tag" >>$startingd/tags.txt
+            echo "$new_dir;$target_tag" >>$startingd/tags.txt #if successfully moved, this updates the directory of the tag in tags.txt
         fi
     else
         echo "Could not move. Aborting"
@@ -69,7 +69,7 @@ git_init() {
     echo "" >readme.md
     git add readme.md
     git commit -m "Project created"
-    git push --set-upstream origin master
+    git push --set-upstream origin master #this creates the remote repo on csgitlab
 }
 add_tag() {
     if [ -f ".pm_tag" ]; then #checks if already tagged
@@ -79,9 +79,9 @@ add_tag() {
     else
         while true; do
             read -p "What would you like to tag this folder with: " tag
-            if [[ ! "$tag" == *";"* ]]; then #tag is invalid if it contains a ;
-                echo $tag >.pm_tag           #creates tag with user input inside
-                echo "$(pwd);$tag" >>$startingd/tags.txt
+            if [[ ! "$tag" == *";"* ]]; then             #tag is invalid if it contains a ;
+                echo $tag >.pm_tag                       #creates tag with user input inside
+                echo "$(pwd);$tag" >>$startingd/tags.txt #adds to database of all tags and locations
                 break
             else
                 echo "Invalid tag. ; is not allowed."
@@ -91,16 +91,25 @@ add_tag() {
 }
 find_tag() {
     read -p "What tag would you like to find: " target_tag
-    while IFS= read -r line; do
-        #get filepath ${line%%;*}
-        #get tag ${line##*;}
+    while IFS= read -r line; do #reads each line of tag database and tries to find match
         if [[ ${line##*;} == $target_tag ]]; then
             echo "Filepath of $target_tag folder:"
             tput setaf 2
             echo ${line%%;*}
             tput sgr0
+        else
+            echo No tag found
         fi
     done <$startingd/tags.txt
+}
+rename_feature() {
+    read -p "Enter the filepath of the feature you would like to rename: " original_path
+    read -p "Enter the new filepath and name " new_feature_name
+    if [ -f "$new_feature_name" ] || [ -d "$new_feature_name" ]; then #file presence check
+        echo "$new_feature_name already exists. Aborting"
+    else
+        mv $original_path $new_feature_name
+    fi
 }
 output_tree_diagram() {
     echo "no"
@@ -125,6 +134,7 @@ while :; do
     echo "1) Create a new folder"
     echo "2) Create a new file"
     echo "3) Move a folder or file"
+    echo "a) Rename a folder or file"
     echo "4) Change the current directory"
     echo "5) Initialise git repo"
     echo "6) Tag the current directory"
@@ -135,6 +145,9 @@ while :; do
     case $opt in
     1)
         create_folder
+        ;;
+    a)
+        rename_feature
         ;;
     2)
         create_file
