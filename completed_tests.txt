@@ -10,3 +10,6 @@
 
 5. Include mechanism for renaming features (subtrees)
 6. Include mechanism for moving feature to new location in tree (folder hierarchy)
+
+8. Time/workload estimate information stored in files in subfolders
+    1. _**Should**_ have mechanisms for adding these from the program not just editing the files

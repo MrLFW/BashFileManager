@@ -32,7 +32,6 @@ Coursework submission will include creating project documentation (using doxygen
     3. _**Should**_ use the plantuml tool
     4. _**Could**_ implement from scratch (much harder, more marks)
 8. Time/workload estimate information stored in files in subfolders
-    1. _**Should**_ have mechanisms for adding these from the program not just editing the files
     2. _**Should**_ include subtrees costs in parent tree total
 9. Time/workload added to output diagram
     1. _**Could**_ also produce Gantt chart (using plantuml)

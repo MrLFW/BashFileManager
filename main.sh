@@ -118,7 +118,24 @@ output_tree_diagram() {
     #     use plantuml
     #     could implement from scratch (much harder but more marks)
 }
-
+edit_view_workload_data() {
+    if [ -f ".pm_wle" ]; then #checks if workload estimate already exists
+        hours=$(cat .pm_wle)
+        echo "Current workload estimate: $hours hour(s) till completion"
+        read -p "Would you like to edit the workload estimate? Enter y/n: " workload_bool
+        if [ $workload_bool == "y" ]; then
+            read -p "Enter workload estimate for this folder in hours: " hours
+            echo $hours >.pm_wle #creates workload estimate
+            echo "Workload estimate created"
+        fi
+    fi
+    if [ ! -f ".pm_wle" ]; then #checks if workload estimate already exists
+        echo "There is no workload estimate for this folder"
+        read -p "Enter workload estimate for this folder in hours: " hours
+        echo $hours >.pm_wle #creates workload estimate
+        echo "Workload estimate created"
+    fi
+}
 if [ ! -f "tags.txt" ]; then #file presence check
     echo "" >tags.txt        #creates new empty file with only "" inside
 fi
@@ -139,6 +156,7 @@ while :; do
     echo "5) Initialise git repo"
     echo "6) Tag the current directory"
     echo "7) Search for a tag"
+    echo "b) Edit or view workload estimate for current directory"
     echo "8) Output tree diagram"
     echo "9) Quit"
     read -p "Please enter your choice: " opt
@@ -169,6 +187,9 @@ while :; do
         ;;
     8)
         output_tree_diagram
+        ;;
+    b)
+        edit_view_workload_data
         ;;
     9)
         break
