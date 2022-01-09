@@ -31,8 +31,6 @@ Coursework submission will include creating project documentation (using doxygen
     2. _**Must**_ exclude folders that start with a '.'
     3. _**Should**_ use the plantuml tool
     4. _**Could**_ implement from scratch (much harder, more marks)
-8. Time/workload estimate information stored in files in subfolders
-    2. _**Should**_ include subtrees costs in parent tree total
 9. Time/workload added to output diagram
     1. _**Could**_ also produce Gantt chart (using plantuml)
 
@@ -54,6 +52,3 @@ Coursework submission will include creating project documentation (using doxygen
     1. sample code for simple communications between applications will be covered
 15. GOAP recommendation of suitable pathway (Advanced, can use existing GOAP library, however)
     1. GOAP uses a 'heap' data structure
-
-
-

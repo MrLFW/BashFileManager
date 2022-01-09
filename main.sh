@@ -118,24 +118,33 @@ output_tree_diagram() {
     #     use plantuml
     #     could implement from scratch (much harder but more marks)
 }
-edit_view_workload_data() {
+edit_workload_data() {
     if [ -f ".pm_wle" ]; then #checks if workload estimate already exists
         hours=$(cat .pm_wle)
         echo "Current workload estimate: $hours hour(s) till completion"
-        read -p "Would you like to edit the workload estimate? Enter y/n: " workload_bool
-        if [ $workload_bool == "y" ]; then
-            read -p "Enter workload estimate for this folder in hours: " hours
-            echo $hours >.pm_wle #creates workload estimate
-            echo "Workload estimate created"
-        fi
     fi
+    read -p "Enter workload estimate for this folder in hours: " hours
+    echo $hours >.pm_wle #creates workload estimate
+    echo "Workload estimate created"
+}
+view_workload_data() {
     if [ ! -f ".pm_wle" ]; then #checks if workload estimate already exists
         echo "There is no workload estimate for this folder"
-        read -p "Enter workload estimate for this folder in hours: " hours
-        echo $hours >.pm_wle #creates workload estimate
-        echo "Workload estimate created"
+    else
+        hours=$(cat .pm_wle)
+        echo "Current folder workload estimate: $hours hour(s) till completion"
     fi
+    subhour=0
+    dir=$(find $(pwd) -path '*/.pm_wle' -type f)
+    a=($(dirname $dir | tr ',' '\n'))
+    for element in "${a[@]}"; do
+        cd $element
+        temph=$(cat .pm_wle)
+        subhour=$(($subhour + $temph))
+    done
+    echo "Total workload estimate including subtrees is $subhour hour(s)"
 }
+
 if [ ! -f "tags.txt" ]; then #file presence check
     echo "" >tags.txt        #creates new empty file with only "" inside
 fi
@@ -189,7 +198,7 @@ while :; do
         output_tree_diagram
         ;;
     b)
-        edit_view_workload_data
+        view_workload_data
         ;;
     9)
         break

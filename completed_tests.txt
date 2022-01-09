@@ -13,3 +13,4 @@
 
 8. Time/workload estimate information stored in files in subfolders
     1. _**Should**_ have mechanisms for adding these from the program not just editing the files
+    2. _**Should**_ include subtrees costs in parent tree total
