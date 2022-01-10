@@ -24,7 +24,7 @@ move_feature() {
         read -p "Where would you like to move it: " destination_tag
         #to get filepath use ${line%%;*}
         #to get tag use ${line##*;}
-        while IFS= read -r line; do
+        while IFS= read -r line; do #reads through tags.txt
             if [[ ${line##*;} == $target_tag ]]; then
                 target_feature=${line%%;*} #finds the filepath of the target tag
             fi
@@ -40,9 +40,9 @@ move_feature() {
     if [ $? -eq 0 ]; then #checks if move was completed successfully
         echo "Moved $target_feature to $destination_feature"
         if [ $tag_bool == "y" ]; then
-            sed -i '' "/$target_tag/d" $startingd/tags.txt
+            sed -i '' "/$target_tag/d" $startingd/tags.txt #if successfully moved, this updates the directory of the tag in tags.txt
             new_dir="$destination_feature/${target_feature##*/}"
-            echo "$new_dir;$target_tag" >>$startingd/tags.txt #if successfully moved, this updates the directory of the tag in tags.txt
+            echo "$new_dir;$target_tag" >>$startingd/tags.txt
         fi
     else
         echo "Could not move. Aborting"
@@ -59,7 +59,7 @@ git_init() {
     git init $repo_name
     cd $repo_name
     read -p "Have you already configured your git account? Enter y/n: " git_config_bool
-    if [ $git_config_bool == "n" ]; then
+    if [ $git_config_bool == "n" ]; then #this is needed because you have to configure your details to use git
         read -p "Enter your email: " email
         git config --local user.email “$email” #using --local instead of --global for the sake of this project, need to keep my credentials how they are to access remote.
         read -p "Enter your username: " name
@@ -68,7 +68,7 @@ git_init() {
     url="https://csgitlab.reading.ac.uk/$name/$repo_name.git"
     git remote add origin $url
     echo "" >readme.md
-    git add readme.md
+    git add readme.md #a readme is created because if you try to push nothing then the project will not be created on the remote repo
     git commit -m "Project created"
     git push --set-upstream origin master #this creates the remote repo on csgitlab
 }
@@ -96,7 +96,7 @@ find_tag() {
         if [[ ${line##*;} == $target_tag ]]; then
             echo "Filepath of $target_tag folder:"
             tput setaf 2
-            echo ${line%%;*}
+            echo ${line%%;*} #this keeps the filepath and trims the tag off where its stored from
             tput sgr0
         else
             echo No tag found
@@ -109,12 +109,12 @@ rename_feature() {
     if [ -f "$new_feature_name" ] || [ -d "$new_feature_name" ]; then #file presence check
         echo "$new_feature_name already exists. Aborting"
     else
-        mv $original_path $new_feature_name
+        mv $original_path $new_feature_name #will rename a file if the destination isnt already taken
     fi
 }
 edit_workload_data() {
     if [ -f ".pm_wle" ]; then #checks if workload estimate already exists
-        hours=$(cat .pm_wle)
+        hours=$(cat .pm_wle)  #reads file
         echo "Current workload estimate: $hours hour(s) till completion"
     fi
     read -p "Enter workload estimate for this folder in hours: " hours
@@ -125,16 +125,16 @@ view_workload_data() {
     if [ ! -f ".pm_wle" ]; then #checks if workload estimate already exists
         echo "There is no workload estimate for this folder"
     else
-        hours=$(cat .pm_wle)
+        hours=$(cat .pm_wle) #reads file
         echo "Current folder workload estimate: $hours hour(s) till completion"
     fi
     subhour=0
-    dir=$(find $(pwd) -path '*/.pm_wle' -type f)
+    dir=$(find $(pwd) -path '*/.pm_wle' -type f) #finds all paths ending in .pm_wle
     a=($(dirname $dir | tr ',' '\n'))
     for element in "${a[@]}"; do
         cd $element
         temph=$(cat .pm_wle)
-        subhour=$(($subhour + $temph))
+        subhour=$(($subhour + $temph)) #loops through all paths and adds the total of the subdirs
     done
     echo "Total workload estimate including subtrees is $subhour hour(s)"
 }
@@ -148,26 +148,25 @@ output_tree_diagram() {
     if [ -f "output.svg" ]; then #file presence check
         rm output.svg
     fi
-
+    #removes all old files to remove conflicts
     temp_tree_paths=$(find $(pwd) -not -path '*/\.*') #this part finds all files and folders and puts the paths into a text file
     for element in "${temp_tree_paths[@]}"; do
-        echo "$element" >>paths.txt
+        echo "$element" >>paths.txt #puts paths into a text file
     done
     echo "@startwbs" >>output.txt
     line=$(head -n 1 paths.txt)
-    starting_depth=$(awk -F"/" '{print NF-1}' <<<"${line}")
+    starting_depth=$(awk -F"/" '{print NF-1}' <<<"${line}") #removes excess stars from path to plantuml conversion
     ((starting_depth -= 1))
     while IFS= read -r line; do
         depth=$(awk -F"/" '{print NF-1}' <<<"${line}")
-        star_count=$(($depth - $starting_depth))
-        for i in $(seq $star_count); do echo -n "*" >>output.txt; done
+        star_count=$(($depth - $starting_depth))                       #calculates the amount of stars each line gets
+        for i in $(seq $star_count); do echo -n "*" >>output.txt; done #writes the stars to a file
         echo -n " " >>output.txt
         end_of_line=$(basename $line | tr '\n' ' ')
-        echo "$end_of_line" >>output.txt
+        echo "$end_of_line" >>output.txt #this puts the text after the stars
     done <paths.txt
     echo "@endwbs" >>output.txt
-    java -jar $plantuml_path output.txt -svg
-    # java -jar /Applications/plantuml.jar output.txt -svg
+    java -jar $plantuml_path output.txt -svg #this is the command to create the svg file
     rm paths.txt
     rm output.txt
 }
@@ -186,25 +185,17 @@ while :; do
     pwd
     tput sgr0
     echo ""
-    echo "1) Create a new folder"
-    echo "2) Create a new file"
-    echo "3) Move a folder or file"
-    echo "a) Rename a folder or file"
-    echo "4) Change the current directory"
-    echo "5) Initialise git repo"
-    echo "6) Tag the current directory"
-    echo "7) Search for a tag"
-    echo "b) Edit or view workload estimate for current directory"
-    echo "8) Output tree diagram"
-    echo "c) Re-enter plantuml.jar filepath"
-    echo "9) Quit"
+    echo "1) Create a new folder                    2) Create a new file"
+    echo "3) Move a folder or file                  4) Rename a folder or file"
+    echo "5) Change the current directory           6) Initialise git repo"
+    echo "7) Tag the current directory              8) Search for a tag"
+    echo "9) View current folder workload estimate  a) Edit current folder workload estimate"
+    echo "b) Output tree diagram                    c) Re-enter plantuml.jar filepath"
+    echo "0) Quit"
     read -p "Please enter your choice: " opt
     case $opt in
     1)
         create_folder
-        ;;
-    a)
-        rename_feature
         ;;
     2)
         create_file
@@ -213,28 +204,34 @@ while :; do
         move_feature
         ;;
     4)
-        change_directory
+        rename_feature
         ;;
     5)
-        git_init
+        change_directory
         ;;
     6)
-        add_tag
+        git_init
         ;;
     7)
-        find_tag
+        add_tag
         ;;
     8)
-        output_tree_diagram
+        find_tag
+        ;;
+    9)
+        view_workload_data
+        ;;
+    a)
+        edit_workload_data
         ;;
     b)
-        view_workload_data
+        output_tree_diagram
         ;;
     c)
         echo "Enter filepath (including plantuml.jar) of plantuml.jar to enable tree diagrams to be outputted"
         read -p "Filepath: " plantuml_path
         ;;
-    9)
+    0)
         break
         ;;
     *) echo "invalid option $REPLY" ;;
