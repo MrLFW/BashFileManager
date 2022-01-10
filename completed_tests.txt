@@ -7,10 +7,14 @@
 4.  Feature management
     1. _**Must**_ implement a method of having a shorthand code for feature e.g. F1, F2.1..., stored in a file.
     2. _**Must**_ implement lookup to facilitate getting path from shorthand code
-
 5. Include mechanism for renaming features (subtrees)
 6. Include mechanism for moving feature to new location in tree (folder hierarchy)
-
+7. Output tree diagram - PBS or WBS (svg, using plantuml)
+    1. Requires tree walk (iterative or recursive)
+    2. _**Must**_ exclude folders that start with a '.'
+    3. _**Should**_ use the plantuml tool
+    4. _**Could**_ implement from scratch (much harder, more marks)
 8. Time/workload estimate information stored in files in subfolders
     1. _**Should**_ have mechanisms for adding these from the program not just editing the files
     2. _**Should**_ include subtrees costs in parent tree total
+    

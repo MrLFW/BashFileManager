@@ -1,3 +1,4 @@
+#!/bin/bash
 create_folder() {
     read -p "New folder name: " new_folder_name
     mkdir $new_folder_name
@@ -111,13 +112,6 @@ rename_feature() {
         mv $original_path $new_feature_name
     fi
 }
-output_tree_diagram() {
-    echo "no"
-    #     requires tree walk
-    #     exclude folders that start with a '.'
-    #     use plantuml
-    #     could implement from scratch (much harder but more marks)
-}
 edit_workload_data() {
     if [ -f ".pm_wle" ]; then #checks if workload estimate already exists
         hours=$(cat .pm_wle)
@@ -144,15 +138,50 @@ view_workload_data() {
     done
     echo "Total workload estimate including subtrees is $subhour hour(s)"
 }
+output_tree_diagram() {
+    if [ -f "paths.txt" ]; then #file presence check
+        rm paths.txt
+    fi
+    if [ -f "output.txt" ]; then #file presence check
+        rm output.txt
+    fi
+    if [ -f "output.svg" ]; then #file presence check
+        rm output.svg
+    fi
+
+    temp_tree_paths=$(find $(pwd) -not -path '*/\.*') #this part finds all files and folders and puts the paths into a text file
+    for element in "${temp_tree_paths[@]}"; do
+        echo "$element" >>paths.txt
+    done
+    echo "@startwbs" >>output.txt
+    line=$(head -n 1 paths.txt)
+    starting_depth=$(awk -F"/" '{print NF-1}' <<<"${line}")
+    ((starting_depth -= 1))
+    while IFS= read -r line; do
+        depth=$(awk -F"/" '{print NF-1}' <<<"${line}")
+        star_count=$(($depth - $starting_depth))
+        for i in $(seq $star_count); do echo -n "*" >>output.txt; done
+        echo -n " " >>output.txt
+        end_of_line=$(basename $line | tr '\n' ' ')
+        echo "$end_of_line" >>output.txt
+    done <paths.txt
+    echo "@endwbs" >>output.txt
+    java -jar $plantuml_path output.txt -svg
+    # java -jar /Applications/plantuml.jar output.txt -svg
+    rm paths.txt
+    rm output.txt
+}
 
 if [ ! -f "tags.txt" ]; then #file presence check
     echo "" >tags.txt        #creates new empty file with only "" inside
 fi
+echo "Enter filepath (including plantuml.jar) of plantuml.jar to enable tree diagrams to be outputted"
+echo "Current filepath: $plantuml_path"
+read -p "Filepath: " plantuml_path
 startingd=$(pwd)
 while :; do
     clear
-    echo "---------------------------------\n"
-    echo "The current working directory is:\n"
+    echo "The current working directory is: "
     tput setaf 2
     pwd
     tput sgr0
@@ -167,6 +196,7 @@ while :; do
     echo "7) Search for a tag"
     echo "b) Edit or view workload estimate for current directory"
     echo "8) Output tree diagram"
+    echo "c) Re-enter plantuml.jar filepath"
     echo "9) Quit"
     read -p "Please enter your choice: " opt
     case $opt in
@@ -199,6 +229,10 @@ while :; do
         ;;
     b)
         view_workload_data
+        ;;
+    c)
+        echo "Enter filepath (including plantuml.jar) of plantuml.jar to enable tree diagrams to be outputted"
+        read -p "Filepath: " plantuml_path
         ;;
     9)
         break
